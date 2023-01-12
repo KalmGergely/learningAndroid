@@ -3,6 +3,7 @@ package com.example.firstapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.Button
@@ -14,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        Log.i("LIFECYCLE", "MainActivity : OnCreate")
             val greetingText = findViewById<TextView>(R.id.tvHello)
             val inputField = findViewById<EditText>(R.id.etName)
             val greetBtn = findViewById<Button>(R.id.btnGreet)
@@ -42,5 +43,35 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("USER", enteredName)
                 startActivity(intent)
             }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("LIFECYCLE", "MainActivity : OnStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("LIFECYCLE", "MainActivity : OnResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.i("LIFECYCLE", "MainActivity : OnPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i("LIFECYCLE", "MainActivity : OnStop")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("LIFECYCLE", "MainActivity : OnDestroy")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.i("LIFECYCLE", "MainActivity : OnRestart")
     }
 }
