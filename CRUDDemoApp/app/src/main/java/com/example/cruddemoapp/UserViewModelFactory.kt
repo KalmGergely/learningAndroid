@@ -9,6 +9,6 @@ class UserViewModelFactory(private val dao : UserDao) : ViewModelProvider.Factor
         if(modelClass.isAssignableFrom(UserViewModel::class.java)) {
             return UserViewModel(dao) as T
         }
-        throw IllegalArgumentException("Unkown viewmodel class")
+        throw IllegalArgumentException("Unknown view model class")
     }
 }
