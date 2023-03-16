@@ -20,6 +20,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userRecyclerView: RecyclerView
     private lateinit var adapter: UserRecyclerViewAdapter
 
+    private lateinit var selectedUser: User
+    private var isListItemClicked = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,11 +39,19 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, factory).get(UserViewModel::class.java)
 
         btnSave.setOnClickListener() {
-            saveUserData()
-            clearUserData()
+            if(isListItemClicked) {
+                updateUserData()
+                clearUserData()
+            } else {
+                saveUserData()
+                clearUserData()
+            }
         }
 
         btnClear.setOnClickListener() {
+            if(isListItemClicked) {
+                deleteUser()
+            }
             clearUserData()
         }
 
@@ -51,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.createUser(User(
             0,
             etName.text.toString(),
-            etEmail.text.toString()));
+            etEmail.text.toString()))
     }
 
     private fun clearUserData() {
@@ -59,9 +70,31 @@ class MainActivity : AppCompatActivity() {
         etEmail.text.clear()
     }
 
+    private fun updateUserData() {
+        viewModel.updateUser(
+            User(
+                selectedUser.id,
+                etName.text.toString(),
+                etEmail.text.toString()))
+
+        btnSave.text = "Save"
+        btnClear.text = "Clear"
+        isListItemClicked = false
+    }
+
+    private fun deleteUser() {
+        viewModel.deleteUser(selectedUser)
+
+        btnSave.text = "Save"
+        btnClear.text = "Clear"
+        isListItemClicked = false
+    }
+
     private fun initRecyclerView() {
         userRecyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = UserRecyclerViewAdapter()
+        adapter = UserRecyclerViewAdapter {
+            selectedItem: User -> listItemClicked(selectedItem)
+        }
         userRecyclerView.adapter = adapter
         displayUsers()
     }
@@ -71,5 +104,16 @@ class MainActivity : AppCompatActivity() {
             adapter.setList(it)
             adapter.notifyDataSetChanged()
         }
+    }
+
+    private fun listItemClicked(user: User) {
+        selectedUser = user
+        etName.setText(selectedUser.name)
+        etEmail.setText(selectedUser.email)
+
+        btnSave.text = "Update"
+        btnClear.text = "Delete"
+
+        isListItemClicked = true
     }
 }

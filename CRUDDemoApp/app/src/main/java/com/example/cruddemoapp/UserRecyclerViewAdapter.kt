@@ -7,8 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cruddemoapp.db.User
 
-class UserRecyclerViewAdapter()
-    : RecyclerView.Adapter<UserViewHolder>() {
+class UserRecyclerViewAdapter(
+    private val clickListener:(User) -> Unit
+): RecyclerView.Adapter<UserViewHolder>() {
     private val userList = ArrayList<User>();
 
     fun setList(users: List<User>) {
@@ -24,7 +25,7 @@ class UserRecyclerViewAdapter()
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.bind(userList[position])
+        holder.bind(userList[position], clickListener)
     }
 
     override fun getItemCount(): Int {
@@ -33,10 +34,14 @@ class UserRecyclerViewAdapter()
 }
 
 class UserViewHolder(private val view : View) : RecyclerView.ViewHolder(view) {
-    fun bind(user: User) {
+    fun bind(user: User, clickListener:(User) -> Unit) {
         val tvName = view.findViewById<TextView>(R.id.tvName)
         val tvEmail = view.findViewById<TextView>(R.id.tvEmail)
         tvName.text = user.name
         tvEmail.text = user.email
+
+        view.setOnClickListener() {
+            clickListener(user)
+        }
     }
 }
