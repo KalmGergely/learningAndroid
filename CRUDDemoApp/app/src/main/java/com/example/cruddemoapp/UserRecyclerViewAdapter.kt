@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cruddemoapp.databinding.ActivityMainBinding
+import com.example.cruddemoapp.databinding.ListItemBinding
 import com.example.cruddemoapp.db.User
 
 class UserRecyclerViewAdapter(
@@ -18,10 +20,8 @@ class UserRecyclerViewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val listItem = layoutInflater.inflate(R.layout.list_item, parent, false)
-
-        return UserViewHolder(listItem)
+        val binding = ListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return UserViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
@@ -33,15 +33,15 @@ class UserRecyclerViewAdapter(
     }
 }
 
-class UserViewHolder(private val view : View) : RecyclerView.ViewHolder(view) {
+class UserViewHolder(private val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(user: User, clickListener:(User) -> Unit) {
-        val tvName = view.findViewById<TextView>(R.id.tvName)
-        val tvEmail = view.findViewById<TextView>(R.id.tvEmail)
-        tvName.text = user.name
-        tvEmail.text = user.email
+        binding.apply {
+            tvName.text = user.name
+            tvEmail.text = user.email
 
-        view.setOnClickListener() {
-            clickListener(user)
+            root.setOnClickListener() {
+                clickListener(user)
+            }
         }
     }
 }

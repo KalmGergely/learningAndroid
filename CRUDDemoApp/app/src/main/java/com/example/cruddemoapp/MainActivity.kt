@@ -7,17 +7,14 @@ import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cruddemoapp.databinding.ActivityMainBinding
 import com.example.cruddemoapp.db.AppDB
 import com.example.cruddemoapp.db.User
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var etName: EditText
-    private lateinit var etEmail: EditText
-    private lateinit var btnSave: Button
-    private lateinit var btnClear: Button
+    private lateinit var binding: ActivityMainBinding
 
     private lateinit var viewModel: UserViewModel
-    private lateinit var userRecyclerView: RecyclerView
     private lateinit var adapter: UserRecyclerViewAdapter
 
     private lateinit var selectedUser: User
@@ -25,77 +22,86 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        etName = findViewById(R.id.etName)
-        etEmail = findViewById(R.id.etEmail)
-        btnSave = findViewById(R.id.btnSave)
-        btnClear = findViewById(R.id.btnClear)
-
-        userRecyclerView = findViewById(R.id.rvUser)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val dao = AppDB.getInstance(application).userDao()
         val factory = UserViewModelFactory(dao)
         viewModel = ViewModelProvider(this, factory).get(UserViewModel::class.java)
 
-        btnSave.setOnClickListener() {
-            if(isListItemClicked) {
-                updateUserData()
-                clearUserData()
-            } else {
-                saveUserData()
+        binding.apply {
+            btnSave.setOnClickListener() {
+                if (isListItemClicked) {
+                    updateUserData()
+                    clearUserData()
+                } else {
+                    saveUserData()
+                    clearUserData()
+                }
+            }
+
+            btnClear.setOnClickListener() {
+                if (isListItemClicked) {
+                    deleteUser()
+                }
                 clearUserData()
             }
-        }
 
-        btnClear.setOnClickListener() {
-            if(isListItemClicked) {
-                deleteUser()
-            }
-            clearUserData()
+            initRecyclerView()
         }
-
-        initRecyclerView()
     }
 
     private fun saveUserData() {
-        viewModel.createUser(User(
-            0,
-            etName.text.toString(),
-            etEmail.text.toString()))
+        binding.apply {
+            viewModel.createUser(
+                User(
+                    0,
+                    etName.text.toString(),
+                    etEmail.text.toString()
+                )
+            )
+        }
     }
 
     private fun clearUserData() {
-        etName.text.clear()
-        etEmail.text.clear()
+        binding.apply {
+            etName.text.clear()
+            etEmail.text.clear()
+        }
     }
 
     private fun updateUserData() {
-        viewModel.updateUser(
-            User(
-                selectedUser.id,
-                etName.text.toString(),
-                etEmail.text.toString()))
+        binding.apply {
+            viewModel.updateUser(
+                User(
+                    selectedUser.id,
+                    etName.text.toString(),
+                    etEmail.text.toString()
+                )
+            )
 
-        btnSave.text = "Save"
-        btnClear.text = "Clear"
-        isListItemClicked = false
+            btnSave.text = "Save"
+            btnClear.text = "Clear"
+            isListItemClicked = false
+        }
     }
 
     private fun deleteUser() {
-        viewModel.deleteUser(selectedUser)
+        binding.apply {
+            viewModel.deleteUser(selectedUser)
 
-        btnSave.text = "Save"
-        btnClear.text = "Clear"
-        isListItemClicked = false
+            btnSave.text = "Save"
+            btnClear.text = "Clear"
+            isListItemClicked = false
+        }
     }
 
     private fun initRecyclerView() {
-        userRecyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = UserRecyclerViewAdapter {
-            selectedItem: User -> listItemClicked(selectedItem)
+        binding.rvUser.layoutManager = LinearLayoutManager(this)
+        adapter = UserRecyclerViewAdapter { selectedItem: User ->
+            listItemClicked(selectedItem)
         }
-        userRecyclerView.adapter = adapter
+        binding.rvUser.adapter = adapter
         displayUsers()
     }
 
@@ -107,13 +113,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun listItemClicked(user: User) {
-        selectedUser = user
-        etName.setText(selectedUser.name)
-        etEmail.setText(selectedUser.email)
+        binding.apply {
+            selectedUser = user
+            etName.setText(selectedUser.name)
+            etEmail.setText(selectedUser.email)
 
-        btnSave.text = "Update"
-        btnClear.text = "Delete"
+            btnSave.text = "Update"
+            btnClear.text = "Delete"
 
-        isListItemClicked = true
+            isListItemClicked = true
+        }
     }
 }
