@@ -3,6 +3,7 @@ package com.example.retrofitdemo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.liveData
@@ -12,6 +13,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val tvItems = findViewById<TextView>(R.id.tvItems)
 
         val retService = RetrofitInstance
             .getRetrofitInstance()
@@ -27,7 +30,10 @@ class MainActivity : AppCompatActivity() {
             if(albumList != null)
                 while (albumList.hasNext()) {
                     val albumItem = albumList.next()
-                    Log.i("Album items", albumItem.title)
+                    val result = " " + "Album Title : ${albumItem.title}" + "\n" +
+                            " " + "Album id : ${albumItem.id}" + "\n" +
+                            " " + "User id : ${albumItem.userId}" + "\n\n\n"
+                    tvItems.append(result)
                 }
         })
     }
