@@ -1,6 +1,5 @@
 package com.example.notificationdemo
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -22,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel(channelID,"DemoChannel", "this is a demo")
 
-        binding.btnNotify.setOnClickListener() {
+        binding.btnNotify.setOnClickListener {
             displayNotification()
         }
     }
@@ -34,14 +33,14 @@ class MainActivity : AppCompatActivity() {
             .setContentText("This is a demo notification")
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
 
         notificationManager?.notify(notificationId, notification)
     }
 
     private fun createNotificationChannel(id: String, name: String, channelDescription: String) {
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(id, name, importance).apply {
                 description = channelDescription
