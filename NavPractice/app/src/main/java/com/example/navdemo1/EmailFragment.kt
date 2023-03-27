@@ -2,6 +2,7 @@ package com.example.navdemo1
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,9 +22,17 @@ class EmailFragment : Fragment() {
         binding = FragmentEmailBinding.inflate(inflater,container,false)
         binding.btnSubmit.setOnClickListener() {
             if (!TextUtils.isEmpty(binding.etEmail.text.toString())) {
-                val userName = requireArguments().getString("user_name")
-                val bundle = bundleOf("user_name" to userName, "user_email" to binding.etEmail.text.toString())
-                it.findNavController().navigate(R.id.action_emailFragment_to_welcomeFragment, bundle)
+                if (Patterns.EMAIL_ADDRESS.matcher(binding.etEmail.text.toString()).matches()) {
+                    val userName = requireArguments().getString("user_name")
+                    val bundle = bundleOf(
+                        "user_name" to userName,
+                        "user_email" to binding.etEmail.text.toString()
+                    )
+                    it.findNavController()
+                        .navigate(R.id.action_emailFragment_to_welcomeFragment, bundle)
+                } else {
+                    Toast.makeText(activity, "Make sure to provide a correct email address", Toast.LENGTH_LONG).show()
+                }
             } else {
                 Toast.makeText(activity, "Please provide an email", Toast.LENGTH_LONG).show()
             }
