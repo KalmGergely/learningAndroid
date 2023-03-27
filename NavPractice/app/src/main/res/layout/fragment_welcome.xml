@@ -33,7 +33,7 @@
         app:layout_constraintVertical_bias="0.41" />
 
     <TextView
-        android:id="@+id/etWelcomeName"
+        android:id="@+id/tvWelcomeEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24sp"
